@@ -48,4 +48,9 @@ router.post('/history/:id/delete', requireAuth, (req, res) => {
   res.redirect('/history');
 });
 
+router.post('/history/:id/rate', requireAuth, (req, res) => {
+  const updateRating = db.prepare('UPDATE study_sessions SET rating = ? WHERE id = ? AND user_id = ?');
+  updateRating.run(req.body.rating, req.params.id, req.session.userId);
+  res.redirect('/history');
+});
 module.exports = router;

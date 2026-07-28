@@ -10,6 +10,7 @@ const db = new Database('app.db');
     this is a block of literal SQL text which JS hands off untouched to SQLITE (better-sqlite3)
     SQLITE is actually creating the table 
 */
+
 db.exec(`
         CREATE TABLE IF NOT EXISTS users(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -19,8 +20,16 @@ db.exec(`
         )
     `);
 
-/* db needs to explicity hand off to the SQLITE 
-    export the db connection so route files can require() and reuse it
-*/
+db.exec(`
+  CREATE TABLE IF NOT EXISTS study_sessions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    topic TEXT NOT NULL,
+    gemini_response TEXT NOT NULL,
+    rating TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  )
+`);
+
 module.exports=db;
     

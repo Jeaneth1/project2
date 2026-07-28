@@ -15,6 +15,11 @@
       <form method="POST" action="/history/<%= session.id %>/delete">
         <button type="submit">Delete</button>
       </form>
+
+        <form method="POST" action="/history/<%= session.id %>/rate" style="display:inline">
+            <button name="rating" value="got_it">Fully understand</button>
+            <button name="rating" value="needs_practice">Need more practice </button>
+        </form>
     </div>
     <hr>
   <% }); %>
