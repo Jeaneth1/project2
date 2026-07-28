@@ -10,7 +10,7 @@ I am a Computer Science student preparing for both my SOC analyst job search and
 
 A user signs up, signs in, and lands on the main page, where they type in any topic they want to study. Gemini generates an explanation, a set of multiple choice practice questions, and a list of resources. The quiz is graded automatically. If I get something wrong, I can retry it and Gemini generates new questions covering the same concept, not the same questions repeated. Every session is saved to my history, organized by day, so I can look back and see everything I have studied.
 
-The calendar is the part I am most proud of. It builds a full week, hour by hour, based on my own wake and sleep times, and it automatically prioritizes topics I marked as needing more practice. I can move a topic to a different day or hour if my schedule changes, or remove a topic entirely if I no longer need to study it. I also added an email reminder system that sends me a message fifteen minutes before a scheduled study session, so I do not have to remember to check the app myself.
+The calendar is the part I am most proud of. It builds a full week, hour by hour, based on my own wake and sleep times, and it automatically prioritizes topics I marked as needing more practice. I can move a topic to a different day or hour if my schedule changes, or remove a topic entirely if I no longer need to study it. I also added an email reminder system that sends me a message fifteen minutes before a scheduled study session, so I do not have to remember to check the app myself. I also have a delete account in calendar scheduling so it ensure you don't delete your account by accident. 
 
 ## Tech Stack
 
