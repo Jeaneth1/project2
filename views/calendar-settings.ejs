@@ -12,18 +12,26 @@
 <p class="subtitle">Set your study window for each day individually. Default is 8:00am to 10:00pm.</p>
 
 <form method="POST" action="/calendar/settings">
-  <% days.forEach(function(day) { %>
-    <div class="day-settings-row">
-      <span class="day-settings-label"><%= day.name %></span>
-      <input type="time" name="wake_<%= day.index %>" value="<%= day.wakeTime %>">
-      <span>to</span>
-      <input type="time" name="sleep_<%= day.index %>" value="<%= day.sleepTime %>">
-    </div>
-  <% }); %>
-  <button type="submit">Save All Days</button>
+<% days.forEach(function(day) { %>
+<div class="day-settings-row">
+<span class="day-settings-label"><%= day.name %></span>
+<input type="time" name="wake_<%= day.index %>" value="<%= day.wakeTime %>">
+<span>to</span>
+<input type="time" name="sleep_<%= day.index %>" value="<%= day.sleepTime %>">
+</div>
+<% }); %>
+<button type="submit">Save All Days</button>
 </form>
 
 <p class="subtitle"><a href="/calendar">Back to calendar</a></p>
+
+<hr style="border-color: var(--border); margin: 30px 0;">
+<h3 style="color: var(--danger);">Delete Account</h3>
+<p class="subtitle">This permanently deletes your account and all study history. Type DELETE to confirm.</p>
+<form method="POST" action="/account/delete">
+<input type="text" name="confirm" placeholder="Type DELETE to confirm" required>
+<button type="submit" style="background: var(--danger); color: white;">Delete My Account</button>
+</form>
 
 </main>
 </body>

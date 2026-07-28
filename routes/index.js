@@ -407,4 +407,24 @@ router.post('/study/:id/chat', requireAuth, async (req, res) => {
   }
 });
 
+router.post('/account/delete', requireAuth, (req, res) => {
+  if (req.body.confirm !== 'DELETE') {
+    return res.status(400).send('You must type DELETE exactly to confirm.');
+  }
+
+  const userId = req.session.userId;
+
+  db.prepare('DELETE FROM chat_messages WHERE user_id = ?').run(userId);
+  db.prepare('DELETE FROM study_sessions WHERE user_id = ?').run(userId);
+  db.prepare('DELETE FROM excluded_topics WHERE user_id = ?').run(userId);
+  db.prepare('DELETE FROM day_schedule WHERE user_id = ?').run(userId);
+  db.prepare('DELETE FROM manual_placements WHERE user_id = ?').run(userId);
+  db.prepare('DELETE FROM sent_reminders WHERE user_id = ?').run(userId);
+  db.prepare('DELETE FROM users WHERE id = ?').run(userId);
+
+  req.session.destroy(() => {
+    res.redirect('/signup');
+  });
+});
+
 module.exports = router;
