@@ -427,4 +427,10 @@ router.post('/account/delete', requireAuth, (req, res) => {
   });
 });
 
+router.get('/signout', requireAuth, (req, res) => {
+  req.session.destroy(() => {
+    res.redirect('/signin');
+  });
+});
+
 module.exports = router;

@@ -598,3 +598,41 @@ label {
 .chat-content a:hover {
   color: var(--accent-dim);
 }
+.account-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 50px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+.signout-btn {
+  background: var(--surface-active);
+  color: var(--text);
+}
+.delete-btn {
+  background: transparent;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+}
+.delete-account-details summary {
+  list-style: none;
+  cursor: pointer;
+}
+.delete-account-details summary::-webkit-details-marker {
+  display: none;
+}
+.delete-confirm-box {
+  position: absolute;
+  right: 24px;
+  background: var(--surface);
+  border: 1px solid var(--danger);
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 8px;
+  width: 280px;
+}
+.account-actions {
+  position: relative;
+}

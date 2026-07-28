@@ -25,13 +25,19 @@
 
 <p class="subtitle"><a href="/calendar">Back to calendar</a></p>
 
-<hr style="border-color: var(--border); margin: 30px 0;">
-<h3 style="color: var(--danger);">Delete Account</h3>
-<p class="subtitle">This permanently deletes your account and all study history. Type DELETE to confirm.</p>
-<form method="POST" action="/account/delete">
-<input type="text" name="confirm" placeholder="Type DELETE to confirm" required>
-<button type="submit" style="background: var(--danger); color: white;">Delete My Account</button>
-</form>
+<div class="account-actions">
+  <a href="/signout"><button type="button" class="signout-btn">Sign Out</button></a>
+  <details class="delete-account-details">
+    <summary><button type="button" class="delete-btn">Delete Account</button></summary>
+    <div class="delete-confirm-box">
+      <p class="subtitle">This permanently deletes your account and all study history. Type DELETE to confirm.</p>
+      <form method="POST" action="/account/delete">
+        <input type="text" name="confirm" placeholder="Type DELETE to confirm" required>
+        <button type="submit" class="delete-btn">Confirm Delete</button>
+      </form>
+    </div>
+  </details>
+</div>
 
 </main>
 </body>
