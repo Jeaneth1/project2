@@ -6,6 +6,8 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var authRouter = require('./routes/auth');
+var session = require('express-session');
 
 var app = express();
 
@@ -17,10 +19,17 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(session({
+  secret: '7424d4a7d935fd8837c0e33153ea4b6a4c8b6e25ea6aeb9eebe2b1ba77e613ff',
+  resave:false,
+  saveUninitialized:false
+}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/', authRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -37,5 +46,8 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+/* adding the connection between the auth.js and app js so that express can see they can be redirected */
+
 
 module.exports = app;
