@@ -9,7 +9,11 @@ const db = require('../db');
 // is submitting data, not just viewing a page), at a path like /signup.
 
 
-router.post('/signup', (req, res)=> {
+router.get('/signup', (req, res)=>{
+    res.render('signup');
+}); /* Get shows us the form  */
+
+router.post('/signup', (req, res)=> { /*Processes the form */
     const {username, email, password} = req.body;
     const hashedPassword= bcrypt.hashSync(password,10);
 
@@ -21,6 +25,10 @@ router.post('/signup', (req, res)=> {
     }catch (err){
         res.status(400).send('Signup failed '+ err.message);
     }
+});
+
+router.get('/signin',(req, res)=>{
+    res.render('signin');
 });
 
 router.post('/signin', (req, res) => {

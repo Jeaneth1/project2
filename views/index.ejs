@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %></title>
+    <title>Study Companion </title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+    <h1> Study Companion </h1>
+    <form method="POST" action ="/study">
+      <input type="text" name="user_topic" placeholder="User_Topic" required>
+
+      <button type ="submit">Learn Away</button>
+    </form>
   </body>
 </html>
