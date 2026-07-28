@@ -53,4 +53,19 @@ router.post('/history/:id/rate', requireAuth, (req, res) => {
   updateRating.run(req.body.rating, req.params.id, req.session.userId);
   res.redirect('/history');
 });
+
+router.get('/calendar', requireAuth, (req, res) => {
+  const sessions = db.prepare(`
+    SELECT * FROM study_sessions 
+    WHERE user_id = ? 
+    ORDER BY 
+      CASE rating 
+        WHEN 'needs_practice' THEN 1 
+        WHEN 'got_it' THEN 3 
+        ELSE 2 
+      END
+  `).all(req.session.userId);
+  res.render('calendar', { sessions: sessions });
+});
+
 module.exports = router;

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Study Calendar</title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+  <h1>Your Adaptive Study Calendar</h1>
+  <p>Topics needing more practice appear first.</p>
+
+  
+  <% sessions.forEach(function(session) { %>
+    <div>
+      <h3><%= session.topic %></h3>
+      <p>
+        <% if (session.rating === 'needs_practice') { %>
+          Status: Needs More Practice
+        <% } else if (session.rating === 'got_it') { %>
+          Status: Got It!
+        <% } else { %>
+          Status: Not Yet Rated
+        <% } %>
+      </p>
+      <p>Last studied: <%= session.created_at %></p>
+    </div>
+    <hr>
+  <% }); %>
+
+</body>
+</html>
