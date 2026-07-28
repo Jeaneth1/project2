@@ -67,6 +67,10 @@ The SQLite database is created automatically the first time the server runs.
 
 I used Resend's free tier for email reminders, which only allows sending to my own verified email address until a custom domain is verified, which requires purchasing a domain. Because of this, reminder emails during testing will be delivered to my own inbox rather than the grader's, but the scheduling and matching logic itself is fully functional.
 
+Render's free web service tier uses an ephemeral filesystem, meaning the SQLite database resets on redeploys, restarts, or after 15 minutes of inactivity (free-tier spin-down). To ensure grading access always works, the app automatically seeds a guaranteed test account (professor_test / TestPass123) on every startup, regardless of prior data state.
+
+Will provided my username and email so you can test the email alerts and how the system works 
+
 ## Notes
 
 I hashed every password with bcrypt before storing it, and I used parameterized SQL queries throughout to prevent SQL injection. Every protected route checks the session individually through a custom requireAuth middleware, so signup and signin stay accessible without a login while everything else stays locked down.

@@ -78,5 +78,11 @@ db.exec(`
     UNIQUE(user_id, topic, sent_date)
   )
 `);
+const bcrypt = require('bcryptjs');
+const testUserExists = db.prepare('SELECT id FROM users WHERE username = ?').get('professor_test');
+if (!testUserExists) {
+  const hashedPassword = bcrypt.hashSync('TestPass123', 10);
+  db.prepare('INSERT INTO users (username, email, password) VALUES (?, ?, ?)').run('professor_test', 'professortest@example.com', hashedPassword);
+}
 
 module.exports=db;
