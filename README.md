@@ -69,7 +69,7 @@ I used Resend's free tier for email reminders, which only allows sending to my o
 
 Render's free web service tier uses an ephemeral filesystem, meaning the SQLite database resets on redeploys, restarts, or after 15 minutes of inactivity (free-tier spin-down). To ensure grading access always works, the app automatically seeds a guaranteed test account (professor_test / TestPass123) on every startup, regardless of prior data state.
 
-Will provided my username and email so you can test the email alerts and how the system works 
+Will provided my username and email so you can test the email alerts and how the system works via the comment in brightspace
 
 ## Notes
 
