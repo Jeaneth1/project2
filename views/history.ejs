@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Study History</title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+  <h1>Your Study History</h1>
+
+  <% sessions.forEach(function(session) { %>
+    <div>
+      <h3><%= session.topic %></h3>
+      <p><%= session.created_at %></p>
+      <pre><%= session.gemini_response %></pre>
+      <form method="POST" action="/history/<%= session.id %>/delete">
+        <button type="submit">Delete</button>
+      </form>
+    </div>
+    <hr>
+  <% }); %>
+
+</body>
+</html>

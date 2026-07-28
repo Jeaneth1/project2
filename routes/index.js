@@ -1,3 +1,4 @@
+const db = require('../db');
 var express = require('express');
 var router = express.Router();
 var requireAuth = require('../middleware/requireAuth');
@@ -27,11 +28,24 @@ router.post('/study', requireAuth, async(req,res)=>{
     const data = await response.json();
     const geminiText = data.candidates[0].content.parts[0].text;
 
+    const insertSession= db.prepare('INSERT INTO study_sessions (user_id, topic, gemini_response) VALUES (?,?,?)');
+    insertSession.run(req.session.userId, user_topic, geminiText);
+
     res.send(geminiText);
   } catch (err){
     res.status(500).send('Gemini request failed: ' + err.message);
   }
 });
 
+router.get('/history', requireAuth, (req, res)=>{
+  const sessions = db.prepare('SELECT * FROM study_sessions WHERE user_id = ?').all(req.session.userId);
+  res.render('history', { sessions: sessions });
+});
+
+router.post('/history/:id/delete', requireAuth, (req, res) => {
+  const deleteSession = db.prepare('DELETE FROM study_sessions WHERE id = ? AND user_id = ?');
+  deleteSession.run(req.params.id, req.session.userId);
+  res.redirect('/history');
+});
 
 module.exports = router;
