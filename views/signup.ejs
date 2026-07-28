@@ -1,17 +1,27 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title> Sign Up </title>
-    </head>
-    <body>
-        <form method="POST" action="/signup">
-            <!--input-->
+<head>
+<title>Sign Up - Study Companion</title>
+<link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body class="auth-body">
+<div class="auth-logo"><span class="logo-icon">&#128214;</span> Study Companion</div>
 
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="email" name="email" placeholder="Email" required>
-            <input type="password" name="password" placeholder="Password" required>
+<div class="auth-wrapper">
+  <div class="auth-card">
+    <h1>Create your account</h1>
+    <p class="subtitle">Start building your study plan.</p>
 
-            <button type ="submit">SignUp </button>
-        </form>
-    </body>
+    <form method="POST" action="/signup">
+      <input type="text" name="username" placeholder="Username" required>
+      <input type="email" name="email" placeholder="Email" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <button type="submit">Sign Up</button>
+    </form>
+
+    <p class="auth-switch">Already have an account? <a href="/signin">Sign in</a></p>
+  </div>
+</div>
+
+</body>
 </html>
