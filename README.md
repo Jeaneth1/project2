@@ -63,7 +63,100 @@ node bin/www
 
 The SQLite database is created automatically the first time the server runs.
 
-## Known Limitations
+## Security Revamp
+
+This section documents a security audit I performed on my own completed 
+project, working through real vulnerabilities one at a time: what I found, 
+why it mattered, what I changed, and how I verified the fix.
+
+### Issue 1: Hardcoded session secret fallback
+
+**What was found:** app.js used `process.env.SESSION_SECRET || '<hardcoded 
+hex string>'` when configuring express session. The fallback value was a 
+real, usable secret where it can easily be exploited. Therefore I change to the hardcore using crypto.
+
+**Why it mattered:** The session secret is what signs the login cookie, 
+proving a session wasn't tampered with. A hardcoded fallback exposed in a 
+public repo lets anyone cryptographically forge a valid session cookie for 
+any user id, completely bypassing the password check in auth.js. No brute 
+force, no failed login attempts, no trace in logs.
+
+**What changed:** The app now reads SESSION SECRET from the environment. 
+If it's missing, the app logs a warning and generates a random secret in 
+memory for that run only, rather than falling back to a fixed value. The 
+tradeoff: if SESSION SECRET isn't set, existing logins are invalidated on 
+every server restart, since a new random secret is generated each time. 
+Setting SESSION SECRET properly in .env (local) or your hosting platform's 
+environment settings avoids this entirely.
+
+**Verified by:** confirming the warning logs correctly when SESSION SECRET 
+is removed from .env, and that signin/signup are unaffected either way.
+
+### Issue 2: Session ID not regenerated on login (session fixation)
+
+**What was found:** In auth.js, the /signin route wrote the authenticated 
+user's id directly onto req.session (`req.session.userId = user.id`) 
+without first regenerating the session. Since express-session assigns a 
+session id to every visitor automatically, even before login, the same id 
+a person held while anonymous carried over unchanged into their 
+authenticated state.
+
+**Why it mattered:** This is a known vulnerability class called session 
+fixation. If an attacker can get a victim's browser to adopt a session id 
+the attacker already knows (a shared device, a planted cookie, a link 
+containing the id), the attacker's copy of that same id becomes valid too 
+the moment the victim logs in, since the login data attaches to whatever 
+id already existed rather than a fresh one. This does not rely on the 
+session secret leaking, it is a separate, independent flaw in the login 
+flow itself.
+
+**What changed:** The /signin route now calls `req.session.regenerate()` 
+before attaching the authenticated user id. This discards whatever session 
+id existed pre-login and issues a completely new one, which is where 
+req.session.userId is then set. Any pre-login id an attacker might have 
+planted is abandoned and never receives the authenticated session data.
+
+**Verified by:** confirming the connect.sid cookie value changes between 
+an anonymous visit and a completed signin.
+
+### Issue 3: Session cookie missing secure and other protective flags
+
+**What was found:** app.js configured express-session without a cookie 
+object, leaving secure, sameSite, and maxAge at their defaults. secure 
+defaulted to false (cookie sent over both http and https), and there was 
+no fixed expiration while the browser stayed open.
+
+**Why it mattered:** Without secure, the session cookie could be sent over 
+an unencrypted http connection if one ever occurred, making it readable by 
+anyone else on the same network path. Without sameSite, the cookie could 
+be attached to background cross site requests (CSRF), letting another 
+site trigger actions using a logged in user's session without their 
+knowledge. Without maxAge, a session had no absolute expiration while the 
+browser remained open.
+
+**What changed:** Added a cookie object to the session config: secure is 
+conditional on NODE_ENV so it only enforces https in production and 
+doesn't break local http testing, httpOnly is set explicitly (blocks 
+client side JavaScript, first party, third party, or injected, from 
+reading the cookie), sameSite is set to 'lax' (only sends the cookie on 
+direct top level navigation to the site, not background cross site 
+requests), and maxAge caps sessions at 24 hours from login.
+
+**Verified by:** inspecting the cookie in browser dev tools to confirm all 
+four flags are applied, and confirming signin/session persistence still 
+works locally where secure correctly evaluates to false.
+
+### Known limitations of this revamp
+
+This audit covered three issues found in app.js and auth.js. It did not 
+yet address: password strength requirements on signup, rate limiting on 
+signin attempts, raw error messages being returned to users in a few 
+routes, or a discrepancy between scheduler.js (which references 
+EMAIL_USER/EMAIL_PASS for a Gmail transporter) and the /remind route 
+(which uses RESEND_API_KEY). These are documented here as a known next 
+step rather than left unmentioned.
+
+## Known Limitations web development
 
 I used Resend's free tier for email reminders, which only allows sending to my own verified email address until a custom domain is verified, which requires purchasing a domain. Because of this, reminder emails during testing will be delivered to my own inbox rather than the grader's, but the scheduling and matching logic itself is fully functional.
 
