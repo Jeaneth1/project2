@@ -1,5 +1,4 @@
 require('dotenv').config();
-
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -17,13 +16,12 @@ const crypto= require('crypto'); //our fix to no session secret
 
 let sessionSecret=process.env.SESSION_SECRET;
 if(!sessionSecret){
-    console.warn('No declared session secret! Will created my own sessionSecret')
-    sessionSecret= crypto.randomBytes(32).toString('hex');
+console.warn('No declared session secret! Will created my own sessionSecret')
+sessionSecret= crypto.randomBytes(32).toString('hex');
 }
 
-
 var app = express();
-~
+
 startScheduler();
 
 // view engine setup
@@ -39,12 +37,12 @@ secret: sessionSecret,
 resave:false,
 saveUninitialized:false,
 cookie:{
-    secure: process.env.NODE_ENV === 'production',
-    httpOnly: true, //only the browser's own automatic cookie handling can access it and send it along with requests, no JavaScript, of any origin, first party, third party, or malicious, can read the value directly.
-    //lax is to ensure that my cookie is sent only in links in the site
-    //stop request from other site so piggybacking themself with my cookies along 
-    sameSite: 'lax',
-    maxAge: 1000 * 60 * 60 * 24 //standard 24 hour the cookie is valid 
+secure: process.env.NODE_ENV === 'production',
+httpOnly: true, //only the browser's own automatic cookie handling can access it and send it along with requests, no JavaScript, of any origin, first party, third party, or malicious, can read the value directly.
+//lax is to ensure that my cookie is sent only in links in the site
+//stop request from other site so piggybacking themself with my cookies along 
+sameSite: 'lax',
+maxAge: 1000 * 60 * 60 * 24 //standard 24 hour the cookie is valid 
 }
 }));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -60,11 +58,8 @@ next(createError(404));
 
 // error handler
 app.use(function(err, req, res, next) {
-// set locals, only providing error in development
 res.locals.message = err.message;
 res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-// render the error page
 res.status(err.status || 500);
 res.render('error');
 });
