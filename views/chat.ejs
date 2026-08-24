@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Chat - <%= session.topic %></title>
+<link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+<%- include('partials/nav') %>
+
+<main class="page-content">
+<h1>Chat: <%= session.topic %></h1>
+<p class="subtitle"><a href="/">Back to Study Companion</a> &middot; <a href="/history">View history</a></p>
+
+<div class="chat-thread">
+  <% if (messages.length === 0) { %>
+    <p class="session-meta">Ask a follow-up question about "<%= session.topic %>" below.</p>
+  <% } %>
+  <% messages.forEach(function(m) { %>
+    <div class="chat-bubble <%= m.role %>">
+      <div class="chat-role"><%= m.role === 'user' ? 'You' : 'Gemini' %></div>
+      <div class="chat-content"><%- m.content_html %></div>
+    </div>
+  <% }); %>
+</div>
+
+<form method="POST" action="/study/<%= session.id %>/chat">
+  <input type="text" name="message" placeholder="Ask a follow-up question..." required>
+  <button type="submit">Send</button>
+</form>
+
+</main>
+</body>
+</html>

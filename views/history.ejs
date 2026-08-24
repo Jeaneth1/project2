@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Study History</title>
+<link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+<%- include('partials/nav') %>
+
+<main class="page-content">
+<h1>Your Study History</h1>
+<p class="subtitle">Grouped by day. Click a topic to expand.</p>
+
+<% Object.keys(groups).forEach(function(dateLabel) { %>
+<div class="day-group">
+<h4><%= dateLabel %></h4>
+<div class="day-scroll">
+<% groups[dateLabel].forEach(function(session) { %>
+<details class="session-entry">
+<summary>
+<%= session.topic %>
+<span class="status">
+<% if (session.rating === 'needs_practice') { %>Needs Practice<% } else if (session.rating === 'got_it') { %>Got It<% } else { %>Not Rated<% } %>
+</span>
+</summary>
+<div class="gemini-output"><%- session.gemini_response_html %></div>
+<div class="session-actions">
+<a href="/study/<%= session.id %>/continue">Continue this topic</a>
+<a href="/study/<%= session.id %>/chat">Ask a follow-up</a>
+<form method="POST" action="/history/<%= session.id %>/rate">
+<button name="rating" value="got_it">Fully understand</button>
+<button name="rating" value="needs_practice">Need more practice</button>
+</form>
+<form method="POST" action="/history/<%= session.id %>/delete">
+<button type="submit">Delete</button>
+</form>
+</div>
+</details>
+<% }); %>
+</div>
+</div>
+<% }); %>
+</main>
+
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Study Calendar</title>
+<link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+<%- include('partials/nav') %>
+
+<main class="page-content" style="max-width: 1100px;">
+<h1>Your Adaptive Study Calendar</h1>
+<p class="subtitle"><a href="/calendar/settings">Edit your daily schedule</a></p>
+
+<form method="POST" action="/remind" style="display:inline">
+<button type="submit">Email me my study reminders</button>
+</form>
+<% if (typeof reminder !== 'undefined') { %>
+<% if (reminder === 'sent') { %><p class="subtitle">Reminder email sent!</p><% } %>
+<% if (reminder === 'none') { %><p class="subtitle">No topics currently need practice.</p><% } %>
+<% } %>
+
+<div class="schedule-grid">
+<% calendarDays.forEach(function(day) { %>
+<div class="schedule-day">
+<h4><%= day.name %></h4>
+<div class="day-hours"><%= day.wakeTime %> - <%= day.sleepTime %></div>
+<% day.slots.forEach(function(slot) { %>
+<div class="schedule-slot <%= slot.topic ? 'filled ' + slot.status : 'free' %>">
+<span class="slot-time"><%= slot.time %></span>
+<% if (slot.topic) { %>
+<span class="slot-topic"><%= slot.topic %><% if (slot.manual) { %> &#128204;<% } %></span>
+
+<details class="slot-move">
+<summary>Move</summary>
+<form method="POST" action="/calendar/move">
+<input type="hidden" name="topic" value="<%= slot.topic %>">
+<select name="day_index">
+<option value="0" <%= day.dayIndex === 0 ? 'selected' : '' %>>Sunday</option>
+<option value="1" <%= day.dayIndex === 1 ? 'selected' : '' %>>Monday</option>
+<option value="2" <%= day.dayIndex === 2 ? 'selected' : '' %>>Tuesday</option>
+<option value="3" <%= day.dayIndex === 3 ? 'selected' : '' %>>Wednesday</option>
+<option value="4" <%= day.dayIndex === 4 ? 'selected' : '' %>>Thursday</option>
+<option value="5" <%= day.dayIndex === 5 ? 'selected' : '' %>>Friday</option>
+<option value="6" <%= day.dayIndex === 6 ? 'selected' : '' %>>Saturday</option>
+</select>
+<select name="hour">
+<% for (let h = 6; h <= 23; h++) { %>
+<option value="<%= h %>" <%= slot.hour === h ? 'selected' : '' %>>
+<%= (h % 12 === 0 ? 12 : h % 12) + (h < 12 ? 'am' : 'pm') %>
+</option>
+<% } %>
+</select>
+<button type="submit">Set</button>
+</form>
+</details>
+
+<form method="POST" action="/calendar/exclude">
+<input type="hidden" name="topic" value="<%= slot.topic %>">
+<input type="hidden" name="day_index" value="<%= day.dayIndex %>">
+<button type="submit">Remove</button>
+</form>
+<% } else { %>
+<span class="slot-topic free-label">Free</span>
+<% } %>
+</div>
+<% }); %>
+</div>
+<% }); %>
+</div>
+
+</main>
+</body>
+</html>

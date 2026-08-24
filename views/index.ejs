@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Study Companion</title>
+<link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+<%- include('partials/nav') %>
+
+<main class="page-content">
+<h1>One Step At A Time</h1>
+<p class="subtitle">Type a topic to get an explanation, practice questions, and resources.</p>
+
+<% if (lastSession) { %>
+  <p class="subtitle">
+    Last studied: <strong><%= lastSession.topic %></strong> ·
+    <a href="/history">View in history</a> ·
+    <a href="/study/<%= lastSession.id %>/continue">Continue this topic</a>
+  </p>
+<% } %>
+
+<form method="POST" action="/study">
+<input type="text" name="user_topic" placeholder="What do you want to study?" value="<%= prefillTopic %>" required>
+<input type="number" name="question_count" placeholder="Number of questions (default 5)">
+<input type="number" name="resource_count" placeholder="Number of resources (default 3)">
+<button type="submit">Learn Away</button>
+</form>
+
+<% if (typeof gradeResult !== 'undefined' && gradeResult) { %>
+  <div class="grade-banner">
+    You got <%= gradeResult.correct %> out of <%= gradeResult.total %> correct on "<%= gradeResult.topic %>".
+    <% if (gradeResult.correct < gradeResult.total) { %>
+      <form method="GET" action="/study/<%= gradeResult.sessionId %>/continue" style="display:inline">
+        <button type="submit">Retry the ones you missed</button>
+      </form>
+    <% } %>
+  </div>
+<% } %>
+
+<% if (typeof allCorrect !== 'undefined' && allCorrect) { %>
+  <div class="grade-banner">You got every question right on this topic. Nothing left to retry.</div>
+<% } %>
+
+<% if (studyResult) { %>
+<div class="gemini-output"><%- studyResult %></div>
+<% } %>
+
+<% if (sessionId) { %>
+  <p class="subtitle"><a href="/study/<%= sessionId %>/chat">Ask a follow-up question about this topic</a></p>
+<% } %>
+
+<% if (quiz) { %>
+  <form method="POST" action="/study/<%= sessionId %>/grade" class="quiz-form">
+    <h3>Test Yourself</h3>
+    <% quiz.forEach(function(q, i) { %>
+      <div class="quiz-question">
+        <p><%= i + 1 %>. <%= q.question %></p>
+        <% q.options.forEach(function(option, optIndex) { %>
+          <label class="quiz-option">
+            <input type="radio" name="answer_<%= q.qindex %>" value="<%= optIndex %>" required>
+            <%= option %>
+          </label>
+        <% }); %>
+      </div>
+    <% }); %>
+    <button type="submit">Submit Answers</button>
+  </form>
+<% } %>
+
+</main>
+
+</body>
+</html>
